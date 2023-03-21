@@ -4,7 +4,10 @@
       <div class="arrow bounce" style=""></div>
     </div>
 
-    <div class="wrapper" @click="changeDoorStatus">
+    <div
+      :class="[showMovieInfo ? 'wrapper-scale' : '', 'wrapper']"
+      @click="changeDoorStatus"
+    >
       <div v-if="!showMovieInfo" class="search-movies-wrapper">
         <div class="wrapper-button">
           <input type="checkbox" @click="getMovie" />
@@ -17,7 +20,19 @@
         </div>
       </div>
       <div v-else class="container" style="width: 100%; height: 100%">
-        <div id="result">hehee</div>
+        <div id="result">
+          <div id="result-common-info">
+            <img :src="dataMovie.Poster" alt="" id="result-poster" />
+            <div>
+              <div style="padding-left: 10px">
+                <div id="result-title">{{ dataMovie.Title }}</div>
+                <div id="result-rating">
+                  <i class="fa fa-star checked"></i> {{ dataMovie.imdbRating }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div id="left-door" :class="[open ? 'left-door-open' : '', 'door']">
         <div class="shape"></div>
@@ -80,6 +95,7 @@ export default {
 </script>
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
 
 * {
   margin: 0;
@@ -131,6 +147,7 @@ body {
   /* 3D */
   perspective: 1000px;
   z-index: 9999;
+  transition: all 0.2s ease-in-out;
 }
 
 .search-movies-wrapper {
@@ -322,5 +339,36 @@ input {
     opacity: 0;
     transform: scale(1);
   }
+}
+.container {
+  padding: 20px 20px;
+}
+.wrapper-scale {
+  /* transform: scaleY(2) scaleX(1.5); */
+  width: 360px;
+  height: 580px;
+  background: #1e283e;
+}
+#result-common-info {
+  display: flex;
+  justify-content: space-between;
+}
+#result-poster {
+  height: 250px;
+  width: auto;
+}
+#result-title {
+  color: white;
+  font-weight: bold;
+  font-size: 25px;
+  text-align: center;
+}
+.checked {
+  color: orange;
+}
+#result-rating {
+  text-align: center;
+  color: white;
+  font-size: 15px;
 }
 </style>
