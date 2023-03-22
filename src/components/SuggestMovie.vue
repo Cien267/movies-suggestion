@@ -29,6 +29,9 @@
                 <div id="result-title">
                   {{ dataMovie.Title }}
                 </div>
+                <div id="result-translated-title">
+                  ({{ dataMovie.TranslatedTitle }})
+                </div>
                 <div id="result-rating">
                   <i class="fa fa-star checked"></i> {{ dataMovie.imdbRating }}
                 </div>

@@ -273,6 +273,13 @@ input {
   text-align: center;
   word-break: break-word;
 }
+#result-translated-title {
+  color: white;
+  font-weight: normal;
+  font-size: 13px;
+  text-align: center;
+  word-break: break-word;
+}
 .checked {
   color: orange;
 }
