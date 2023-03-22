@@ -102,7 +102,7 @@ export default {
   async mounted() {
     const choosenFilm = movies[Math.floor(Math.random() * movies.length)]
         let result = await axios.get(
-          `http://www.omdbapi.com/?apikey=7859df6b&i=${choosenFilm.id}`
+          `https://www.omdbapi.com/?apikey=7859df6b&i=${choosenFilm.id}`
         )
 
         console.log(result.data.Plot);
@@ -119,7 +119,7 @@ export default {
         }, 500)
         const choosenFilm = movies[Math.floor(Math.random() * movies.length)]
         let result = await axios.get(
-          `http://www.omdbapi.com/?apikey=7859df6b&i=${choosenFilm.id}`
+          `https://www.omdbapi.com/?apikey=7859df6b&i=${choosenFilm.id}`
         )
         this.dataMovie = result.data
         console.log(this.dataMovie)
