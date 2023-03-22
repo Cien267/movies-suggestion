@@ -24,12 +24,44 @@
           <div id="result-common-info">
             <img :src="dataMovie.Poster" alt="" id="result-poster" />
             <div>
-              <div style="padding-left: 10px">
+              <div>
                 <div id="result-title">{{ dataMovie.Title }}</div>
                 <div id="result-rating">
                   <i class="fa fa-star checked"></i> {{ dataMovie.imdbRating }}
                 </div>
+                <div id="result-time-year">
+                  <div>{{ dataMovie.Year }}</div>
+                  -
+                  <div>{{ dataMovie.Runtime }}</div>
+                </div>
               </div>
+            </div>
+          </div>
+          <div id="result-main-info">
+            <div id="result-genre">
+              <div
+                class="genre-element"
+                v-for="(genre, index) in dataMovie.Genre.split(',')"
+                :key="index"
+              >
+                {{ genre }}
+              </div>
+            </div>
+            <div id="result-plot">
+              <div>Nội dung:</div>
+              <p>{{ dataMovie.Plot }}</p>
+            </div>
+            <div id="result-director">
+              <div>Đạo diễn:</div>
+              <p>{{ dataMovie.Director }}</p>
+            </div>
+            <div id="result-actor">
+              <div>Diễn viên:</div>
+              <p>{{ dataMovie.Actors }}</p>
+            </div>
+            <div id="result-country">
+              <div>Quốc gia:</div>
+              <p>{{ dataMovie.Country }}</p>
             </div>
           </div>
         </div>
@@ -349,6 +381,10 @@ input {
   height: 580px;
   background: #1e283e;
 }
+#result {
+  overflow: auto;
+  height: 500px;
+}
 #result-common-info {
   display: flex;
   justify-content: space-between;
@@ -370,5 +406,48 @@ input {
   text-align: center;
   color: white;
   font-size: 15px;
+}
+#result-time-year {
+  color: rgb(214, 99, 99);
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  padding-top: 5px;
+}
+#result-genre {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding-top: 20px;
+}
+.genre-element {
+  display: inline-block;
+  color: white;
+  font-size: 13px;
+  border: 1px solid white;
+  border-radius: 5px;
+  padding: 3px 12px;
+}
+#result-plot,
+#result-actor,
+#result-country,
+#result-director {
+  padding-top: 30px;
+}
+#result-plot > div,
+#result-actor > div,
+#result-country > div,
+#result-director > div {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}
+#result-plot p,
+#result-actor p,
+#result-country p,
+#result-director p {
+  color: rgb(190, 183, 183);
+  font-size: 13px;
 }
 </style>
