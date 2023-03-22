@@ -36,8 +36,12 @@
 <script>
 import axios from "axios"
 import movies from "./movies.json"
+import translationMixin from './mixin/translationMixin';
+
 
 export default {
+  mixins: [translationMixin],
+
   data() {
     return {
       open: false,
@@ -56,27 +60,7 @@ export default {
 
         console.log(result.data.Plot);
 
-        const encodedParams = new URLSearchParams();
-        encodedParams.append("from", "en");
-        encodedParams.append("to", "vi");
-        encodedParams.append("text", result.data.Plot);
-
-        const options = {
-          method: 'POST',
-          url: 'https://translo.p.rapidapi.com/api/v3/translate',
-          headers: {
-            'content-type': 'application/x-www-form-urlencoded',
-            'X-RapidAPI-Key': 'b8a96d1ca1msh2d5203eaa785f1fp130238jsna0941ed6f213',
-            'X-RapidAPI-Host': 'translo.p.rapidapi.com'
-          },
-          data: encodedParams
-        };
-
-        axios.request(options).then(function (response) {
-          console.log(response.data);
-        }).catch(function (error) {
-          console.error(error);
-        });
+        console.log(this.translate(result.data.Plot));
 
   },
   methods: {
