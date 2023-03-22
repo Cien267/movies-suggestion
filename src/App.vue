@@ -83,6 +83,7 @@
 <script>
 import axios from "axios"
 import movies from "./movies.json"
+import io from 'socket.io-client';
 export default {
   data() {
     return {
@@ -94,6 +95,27 @@ export default {
   },
   name: "App",
   components: {},
+  mounted() {
+    const socket = io('ws://iat-api-sg.xf-yun.com/v2/iat', {
+      query: {
+        token: 'ab6c0ff6ae3da6e51f8074be92f296ac',
+        appid: 'ga028d6b',
+      },
+    });
+
+    socket.on('connect', () => {
+      console.log('Connected to WebSocket server');
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Disconnected from WebSocket server');
+    });
+
+    socket.on('message', (data) => {
+      console.log('Received message:', data);
+      this.messages.push({ id: this.messages.length + 1, text: data });
+    });
+  },
   methods: {
     async getMovie() {
       try {
