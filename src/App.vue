@@ -25,14 +25,16 @@
             <img :src="dataMovie.Poster" alt="" id="result-poster" />
             <div>
               <div>
-                <div id="result-title">{{ dataMovie.Title }}</div>
+                <div id="result-title">
+                  {{ dataMovie.Title }}
+                </div>
                 <div id="result-rating">
                   <i class="fa fa-star checked"></i> {{ dataMovie.imdbRating }}
                 </div>
                 <div id="result-time-year">
                   <div>{{ dataMovie.Year }}</div>
                   -
-                  <div>{{ dataMovie.Runtime }}</div>
+                  <div>{{ dataMovie.Runtime.slice(0, -4) }} phút</div>
                 </div>
               </div>
             </div>
@@ -41,7 +43,7 @@
             <div id="result-genre">
               <div
                 class="genre-element"
-                v-for="(genre, index) in dataMovie.Genre.split(',')"
+                v-for="(genre, index) in dataMovie.Genre"
                 :key="index"
               >
                 {{ genre }}
@@ -49,7 +51,7 @@
             </div>
             <div id="result-plot">
               <div>Nội dung:</div>
-              <p>{{ dataMovie.Plot }}</p>
+              <p>{{ dataMovie.TranslatedPlot }}</p>
             </div>
             <div id="result-director">
               <div>Đạo diễn:</div>
@@ -61,7 +63,7 @@
             </div>
             <div id="result-country">
               <div>Quốc gia:</div>
-              <p>{{ dataMovie.Country }}</p>
+              <p>{{ dataMovie.TranslatedCountry }}</p>
             </div>
           </div>
         </div>
@@ -83,8 +85,7 @@
 <script>
 import axios from "axios"
 import movies from "./movies.json"
-import translationMixin from './mixin/translationMixin';
-
+import translationMixin from "./mixin/translationMixin"
 
 export default {
   mixins: [translationMixin],
@@ -99,17 +100,6 @@ export default {
   },
   name: "App",
   components: {},
-  async mounted() {
-    const choosenFilm = movies[Math.floor(Math.random() * movies.length)]
-        let result = await axios.get(
-          `https://www.omdbapi.com/?apikey=7859df6b&i=${choosenFilm.id}`
-        )
-
-        console.log(result.data.Plot);
-
-        console.log(this.translate(result.data.Plot));
-
-  },
   methods: {
     async getMovie() {
       try {
@@ -122,12 +112,30 @@ export default {
           `https://www.omdbapi.com/?apikey=7859df6b&i=${choosenFilm.id}`
         )
         this.dataMovie = result.data
-        console.log(this.dataMovie)
+
+        //translate
+        const translatedCountry = await this.translate(result.data.Country)
+        const translatedPlot = await this.translate(result.data.Plot)
+        const translatedTitle = await this.translate(result.data.Title)
+        let genreList = result.data.Genre.split(",")
+        let translatedGenreList = []
+        for (let i = 0; i < genreList.length; i++) {
+          let translatedGenre = await this.translate(genreList[i])
+          translatedGenreList.push(translatedGenre.translated_text)
+        }
+
+        this.dataMovie.Genre = translatedGenreList
+        this.dataMovie.TranslatedCountry = translatedCountry.translated_text
+        this.dataMovie.TranslatedPlot = translatedPlot.translated_text
+        this.dataMovie.TranslatedTitle = translatedTitle.translated_text
+
         setTimeout(() => {
           this.open = true
           this.showMovieInfo = true
         }, 500)
-      } catch (e) {}
+      } catch (e) {
+        console.log(e)
+      }
     },
     changeDoorStatus() {
       this.open = !this.open
@@ -398,7 +406,8 @@ input {
   background: #1e283e;
 }
 #result {
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   height: 500px;
 }
 #result-common-info {
@@ -414,6 +423,7 @@ input {
   font-weight: bold;
   font-size: 25px;
   text-align: center;
+  word-break: break-word;
 }
 .checked {
   color: orange;
@@ -432,9 +442,6 @@ input {
   padding-top: 5px;
 }
 #result-genre {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
   padding-top: 20px;
 }
 .genre-element {
@@ -444,6 +451,7 @@ input {
   border: 1px solid white;
   border-radius: 5px;
   padding: 3px 12px;
+  margin: 10px 10px;
 }
 #result-plot,
 #result-actor,
