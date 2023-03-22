@@ -36,7 +36,7 @@
 <script>
 import axios from "axios"
 import movies from "./movies.json"
-import io from 'socket.io-client';
+
 export default {
   data() {
     return {
@@ -48,26 +48,36 @@ export default {
   },
   name: "App",
   components: {},
-  mounted() {
-    const socket = io('ws://iat-api-sg.xf-yun.com/v2/iat', {
-      query: {
-        token: 'ab6c0ff6ae3da6e51f8074be92f296ac',
-        appid: 'ga028d6b',
-      },
-    });
+  async mounted() {
+    const choosenFilm = movies[Math.floor(Math.random() * movies.length)]
+        let result = await axios.get(
+          `http://www.omdbapi.com/?apikey=7859df6b&i=${choosenFilm.id}`
+        )
 
-    socket.on('connect', () => {
-      console.log('Connected to WebSocket server');
-    });
+        console.log(result.data.Plot);
 
-    socket.on('disconnect', () => {
-      console.log('Disconnected from WebSocket server');
-    });
+        const encodedParams = new URLSearchParams();
+        encodedParams.append("from", "en");
+        encodedParams.append("to", "vi");
+        encodedParams.append("text", result.data.Plot);
 
-    socket.on('message', (data) => {
-      console.log('Received message:', data);
-      this.messages.push({ id: this.messages.length + 1, text: data });
-    });
+        const options = {
+          method: 'POST',
+          url: 'https://translo.p.rapidapi.com/api/v3/translate',
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+            'X-RapidAPI-Key': 'b8a96d1ca1msh2d5203eaa785f1fp130238jsna0941ed6f213',
+            'X-RapidAPI-Host': 'translo.p.rapidapi.com'
+          },
+          data: encodedParams
+        };
+
+        axios.request(options).then(function (response) {
+          console.log(response.data);
+        }).catch(function (error) {
+          console.error(error);
+        });
+
   },
   methods: {
     async getMovie() {
