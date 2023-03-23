@@ -7,7 +7,15 @@
       @click="changeDoorStatus"
     >
       <div v-if="!showMovieInfo" class="search-movies-wrapper">
-        <button-suggest :searched="searched" @getMovie="getMovie" />
+        <div class="wrapper-button">
+          <input type="checkbox" @click="getMovie" />
+          <span><i class="icon-off"></i></span>
+        </div>
+        <div v-if="searched" class="circles">
+          <div class="circle1"></div>
+          <div class="circle2"></div>
+          <div class="circle3"></div>
+        </div>
       </div>
       <div v-else class="container" style="width: 100%; height: 100%">
         <movie :dataMovie="dataMovie" :youtube-trailer-id="youtubeTrailerId" />
@@ -25,7 +33,6 @@ import Loading from "./parts/Loading.vue"
 import Movie from "./parts/Movie.vue"
 import Arrow from "./parts/Arrow.vue"
 import Doors from "./parts/Doors.vue"
-import ButtonSuggest from "./parts/ButtonSuggest.vue"
 const YOUTUBE_API_KEY = "AIzaSyDBqJDKoJWqrudtlb7v0-eRvaU4zj8Tu0Y"
 const YOUTUBE_API_BASE_URL = "https://www.googleapis.com/youtube/v3/search/"
 export default {
@@ -42,7 +49,7 @@ export default {
       youtubeTrailerId: "",
     }
   },
-  components: { Loading, Movie, Arrow, Doors, ButtonSuggest },
+  components: { Loading, Movie, Arrow, Doors },
   methods: {
     async getMovie() {
       this.loading = true
