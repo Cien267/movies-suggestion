@@ -1,96 +1,18 @@
 <template>
   <div>
     <loading v-if="loading" />
-    <div style="padding-bottom: 50px; display: flex; justify-content: center">
-      <div class="arrow bounce" style=""></div>
-    </div>
-
+    <arrow />
     <div
       :class="[showMovieInfo ? 'wrapper-scale' : '', 'wrapper']"
       @click="changeDoorStatus"
     >
       <div v-if="!showMovieInfo" class="search-movies-wrapper">
-        <div class="wrapper-button">
-          <input type="checkbox" @click="getMovie" />
-          <span><i class="icon-off"></i></span>
-        </div>
-        <div v-if="searched" class="circles">
-          <div class="circle1"></div>
-          <div class="circle2"></div>
-          <div class="circle3"></div>
-        </div>
+        <button-suggest :searched="searched" @getMovie="getMovie" />
       </div>
       <div v-else class="container" style="width: 100%; height: 100%">
-        <div id="result">
-          <div id="result-common-info">
-            <img :src="dataMovie.Poster" alt="" id="result-poster" />
-            <div>
-              <div>
-                <div id="result-title">
-                  {{ dataMovie.Title }}
-                </div>
-                <div id="result-translated-title">
-                  ({{ dataMovie.TranslatedTitle }})
-                </div>
-                <div id="result-rating">
-                  <i class="fa fa-star checked"></i> {{ dataMovie.imdbRating }}
-                </div>
-                <div id="result-time-year">
-                  <div>{{ dataMovie.Year }}</div>
-                  -
-                  <div>{{ dataMovie.Runtime.slice(0, -4) }} phút</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div id="result-main-info">
-            <div id="result-genre">
-              <div
-                class="genre-element"
-                v-for="(genre, index) in dataMovie.Genre"
-                :key="index"
-              >
-                {{ genre }}
-              </div>
-            </div>
-            <div id="result-plot">
-              <div>Nội dung:</div>
-              <p>{{ dataMovie.TranslatedPlot }}</p>
-            </div>
-            <div id="result-director">
-              <div>Đạo diễn:</div>
-              <p>{{ dataMovie.Director }}</p>
-            </div>
-            <div id="result-actor">
-              <div>Diễn viên:</div>
-              <p>{{ dataMovie.Actors }}</p>
-            </div>
-            <div id="result-country">
-              <div>Quốc gia:</div>
-              <p>{{ dataMovie.TranslatedCountry }}</p>
-            </div>
-            <div id="trailer">
-              <div style="padding-bottom: 10px">Trailer:</div>
-              <youtube
-                player-width="100%"
-                player-height="100%"
-                v-if="youtubeTrailerId"
-                :video-id="youtubeTrailerId"
-              ></youtube>
-            </div>
-          </div>
-        </div>
+        <movie :dataMovie="dataMovie" :youtube-trailer-id="youtubeTrailerId" />
       </div>
-      <div id="left-door" :class="[open ? 'left-door-open' : '', 'door']">
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div id="left-knob" class="knob"></div>
-      </div>
-      <div id="right-door" :class="[open ? 'right-door-open' : '', 'door']">
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div id="right-knob" class="knob"></div>
-      </div>
+      <doors :open="open" />
     </div>
   </div>
 </template>
@@ -99,7 +21,11 @@
 import axios from "axios"
 import movies from "../movies.json"
 import translationMixin from "../mixin/translationMixin"
-import Loading from "./Loading.vue"
+import Loading from "./parts/Loading.vue"
+import Movie from "./parts/Movie.vue"
+import Arrow from "./parts/Arrow.vue"
+import Doors from "./parts/Doors.vue"
+import ButtonSuggest from "./parts/ButtonSuggest.vue"
 const YOUTUBE_API_KEY = "AIzaSyDBqJDKoJWqrudtlb7v0-eRvaU4zj8Tu0Y"
 const YOUTUBE_API_BASE_URL = "https://www.googleapis.com/youtube/v3/search/"
 export default {
@@ -116,7 +42,7 @@ export default {
       youtubeTrailerId: "",
     }
   },
-  components: { Loading },
+  components: { Loading, Movie, Arrow, Doors, ButtonSuggest },
   methods: {
     async getMovie() {
       this.loading = true
