@@ -311,13 +311,15 @@ input {
 #result-plot,
 #result-actor,
 #result-country,
-#result-director {
+#result-director,
+#trailer {
   padding-top: 30px;
 }
 #result-plot > div,
 #result-actor > div,
 #result-country > div,
-#result-director > div {
+#result-director > div,
+#trailer > div {
   color: white;
   font-size: 18px;
   font-weight: bold;

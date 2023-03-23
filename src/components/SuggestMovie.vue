@@ -69,6 +69,15 @@
               <div>Quốc gia:</div>
               <p>{{ dataMovie.TranslatedCountry }}</p>
             </div>
+            <div id="trailer">
+              <div style="padding-bottom: 10px">Trailer:</div>
+              <youtube
+                player-width="100%"
+                player-height="100%"
+                v-if="youtubeTrailerId"
+                :video-id="youtubeTrailerId"
+              ></youtube>
+            </div>
           </div>
         </div>
       </div>
@@ -91,6 +100,8 @@ import axios from "axios"
 import movies from "../movies.json"
 import translationMixin from "../mixin/translationMixin"
 import Loading from "./Loading.vue"
+const YOUTUBE_API_KEY = "AIzaSyDBqJDKoJWqrudtlb7v0-eRvaU4zj8Tu0Y"
+const YOUTUBE_API_BASE_URL = "https://www.googleapis.com/youtube/v3/search/"
 export default {
   name: "SuggestMovie",
   mixins: [translationMixin],
@@ -102,6 +113,7 @@ export default {
       showMovieInfo: false,
       dataMovie: Object,
       loading: false,
+      youtubeTrailerId: "",
     }
   },
   components: { Loading },
@@ -118,6 +130,29 @@ export default {
           `https://www.omdbapi.com/?apikey=7859df6b&i=${choosenFilm.id}`
         )
         this.dataMovie = result.data
+
+        //get youtube video
+        const params = {
+          part: "snippet",
+          key: YOUTUBE_API_KEY,
+          q:
+            this.dataMovie.Title +
+            " (" +
+            this.dataMovie.Year +
+            ")" +
+            " official trailer",
+          type: "video",
+          maxResults: 1,
+        }
+
+        await axios
+          .get(YOUTUBE_API_BASE_URL, { params })
+          .then((response) => {
+            this.youtubeTrailerId = response.data.items[0].id.videoId
+          })
+          .catch((error) => {
+            console.log(error)
+          })
 
         //translate
         const translatedCountry = await this.translate(result.data.Country)
